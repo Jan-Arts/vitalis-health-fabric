@@ -1,0 +1,46 @@
+# Vitalis Health Network - synthetic data configuration
+# Everything is seeded: same seed + same config + same --as-of => identical output.
+seed: 42
+
+reference:
+  hospitals:
+    - {facility_id: VGH, name: Vitalis General Hospital,            city: Boston,    licensed_beds: 420}
+    - {facility_id: VRM, name: Vitalis Riverside Medical Center,    city: Worcester, licensed_beds: 280}
+    - {facility_id: VNH, name: Vitalis Northgate Hospital,          city: Lowell,    licensed_beds: 160}
+  clinics:
+    - {facility_id: VC01, name: Vitalis Family Clinic - Cambridge,   city: Cambridge}
+    - {facility_id: VC02, name: Vitalis Family Clinic - Quincy,      city: Quincy}
+    - {facility_id: VC03, name: Vitalis Family Clinic - Brockton,    city: Brockton}
+    - {facility_id: VC04, name: Vitalis Family Clinic - Springfield, city: Springfield}
+    - {facility_id: VC05, name: Vitalis Specialty Clinic - Lynn,     city: Lynn}
+    - {facility_id: VC06, name: Vitalis Specialty Clinic - Salem,    city: Salem}
+    - {facility_id: VC07, name: Vitalis Family Clinic - Framingham,  city: Framingham}
+    - {facility_id: VC08, name: Vitalis Family Clinic - New Bedford, city: New Bedford}
+  # Share of licensed beds per unit (must sum to 1.0). ED = treatment spaces.
+  unit_share:
+    ED: 0.15
+    ICU: 0.10
+    MED_SURG: 0.36
+    CARDIOLOGY: 0.12
+    ONCOLOGY: 0.08
+    ORTHOPEDICS: 0.08
+    PEDIATRICS: 0.06
+    MATERNITY: 0.05
+  provider_count: 400
+
+adt:
+  ed_arrivals_per_bed_per_day: 0.46   # ED arrivals/day = this * licensed beds. 0.48 = surge demo. >= 0.50 saturates (hours-long waits)
+  ed_admit_scale: 1.6                 # multiplies acuity-based admit probabilities (stands in for direct/elective admits)
+  patient_pool_size: 20000            # synthetic patients (repeat visits happen)
+  vitals_interval_min_inpatient: 240  # ICU and ED use tighter fixed intervals
+  deterioration_probability: 0.04     # share of admitted patients who deteriorate
+  turnaround_min: 45                  # bed cleaning time
+
+dq:   # defect rates applied by inject_dq_defects.py
+  duplicate_patient_rate: 0.015
+  missing_encounter_rate: 0.010
+  invalid_code_rate: 0.020
+  invalid_date_rate: 0.005
+  negative_cost_rate: 0.003
+  null_fk_rate: 0.004
+  exact_duplicate_encounter_rate: 0.005
