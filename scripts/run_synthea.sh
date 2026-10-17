@@ -10,12 +10,17 @@ REF="${REF:-20260101}"         # reference date YYYYMMDD
 STATE="${STATE:-Massachusetts}"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-WORK="$ROOT/data/synthea_work"
 OUT="$ROOT/data/synthea_raw"
-mkdir -p "$WORK" "$OUT"
+mkdir -p "$OUT"
 
-[ -d "$WORK/synthea" ] || git clone --depth 1 https://github.com/synthetichealth/synthea.git "$WORK/synthea"
-cd "$WORK/synthea"
+# In Docker, SYNTHEA_HOME points at the prebuilt copy. Locally we clone on first use.
+if [ -z "${SYNTHEA_HOME:-}" ]; then
+  WORK="$ROOT/data/synthea_work"
+  mkdir -p "$WORK"
+  [ -d "$WORK/synthea" ] || git clone --depth 1 https://github.com/synthetichealth/synthea.git "$WORK/synthea"
+  SYNTHEA_HOME="$WORK/synthea"
+fi
+cd "$SYNTHEA_HOME"
 
 ./run_synthea -p "$POP" -s "$SEED" -cs "$SEED" -r "$REF" \
   --exporter.baseDirectory="$OUT" \
@@ -25,3 +30,4 @@ cd "$WORK/synthea"
   "$STATE"
 
 echo "Done. CSVs in $OUT/csv"
+
