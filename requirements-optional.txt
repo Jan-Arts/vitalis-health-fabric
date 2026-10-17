@@ -1,0 +1,4 @@
+# Only needed for streaming to Fabric Eventstream and uploading to OneLake
+azure-eventhub>=5.11
+azure-identity>=1.15
+azure-storage-file-datalake>=12.14

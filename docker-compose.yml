@@ -1,0 +1,39 @@
+# Usage (from repo root):
+#   docker compose build
+#   POP=2000 docker compose run --rm synthea     # smoke test first
+#   docker compose run --rm synthea              # full run (POP default 30000)
+#   docker compose run --rm generate             # DQ defects, claims, reference, ADT history
+#   docker compose run --rm test                 # pytest
+#   docker compose run --rm shell                # interactive shell
+# Output lands in ./data on your machine.
+x-datagen: &datagen
+  build: .
+  image: vitalis-datagen
+  volumes:
+    - ./data:/app/data
+    - ./generators:/app/generators    # edit code locally, no rebuild needed
+    - ./scripts:/app/scripts
+    - ./tests:/app/tests
+  environment:
+    POP: ${POP:-30000}
+    SEED: ${SEED:-42}
+    REF: ${REF:-20260101}
+    STATE: ${STATE:-Massachusetts}
+    AS_OF: ${AS_OF:-2026-01-31T00:00:00Z}
+    JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--Xmx4g}
+    EVENTHUB_CONNECTION_STRING: ${EVENTHUB_CONNECTION_STRING:-}
+    EVENTHUB_NAME: ${EVENTHUB_NAME:-}
+
+services:
+  synthea:
+    <<: *datagen
+    command: scripts/run_synthea.sh
+  generate:
+    <<: *datagen
+    command: scripts/run_all.sh
+  test:
+    <<: *datagen
+    command: pytest -q tests
+  shell:
+    <<: *datagen
+    command: bash

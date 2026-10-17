@@ -5,8 +5,9 @@
 ## Pre-flight (no Fabric needed)
 - [ ] Tenant settings enabled in the Admin portal: users can create Fabric items; users can try Fabric paid features; Git integration (and GitHub variant); Activator; XMLA endpoints / Analyze in Excel.
 - [ ] GitHub repo `vitalis-health-fabric` created and this project pushed (branches `main` and `dev`).
-- [ ] Python 3.10+ and **Java 17+** installed locally.
-- [ ] `pytest -q` passes; `scripts/run_synthea.sh` and `scripts/run_all.sh` completed; `data/` populated.
+- [ ] **Docker Desktop** installed (no local Python or Java needed). Give it 6 GB+ RAM (Settings -> Resources).
+- [ ] `docker compose build`, then `docker compose run --rm test` passes.
+- [ ] `POP=2000 docker compose run --rm synthea` smoke test OK, then the full `docker compose run --rm synthea` and `docker compose run --rm generate`; `data/` populated.
 - [ ] GitHub fine-grained personal access token ready (Contents: read and write, repo-scoped) for Fabric Git integration.
 
 ```bash

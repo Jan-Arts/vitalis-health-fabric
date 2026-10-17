@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Generate Synthea patients (CSV + FHIR). Requires Java 17+ and git.
+# Generate Synthea patients (CSV + FHIR). Easiest via Docker: `docker compose run --rm synthea`.
+# Running locally needs Java 17+ and git.
 # Output: data/synthea_raw/csv/*.csv and data/synthea_raw/fhir/*.json
 # Reproducible: fixed seeds and a fixed reference date.
 set -euo pipefail
@@ -30,4 +31,3 @@ cd "$SYNTHEA_HOME"
   "$STATE"
 
 echo "Done. CSVs in $OUT/csv"
-
